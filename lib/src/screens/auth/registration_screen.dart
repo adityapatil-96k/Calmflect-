@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../contexts/auth_context.dart';
 import '../../services/auth_service.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -18,15 +16,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _loading = false;
 
   Future<void> _handleRegister(BuildContext context) async {
-    final auth = Provider.of<AuthProvider>(context, listen: false);
-
     final name = _nameController.text.trim();
     final email = _emailController.text.trim();
     final phone = _phoneController.text.trim();
     final password = _passwordController.text.trim();
 
     if (name.isEmpty || email.isEmpty || phone.isEmpty || password.isEmpty) {
-      if (!context.mounted) return; // ✅ fixed
+      if (!mounted) return;
       _showAlert("Missing Fields", "Please fill in all fields");
       return;
     }
@@ -41,66 +37,71 @@ class _RegisterScreenState extends State<RegisterScreen> {
         'password': password,
       });
 
-      if (!context.mounted) return; // ✅ fixed
+      if (!mounted) return;
 
       if (res['success'] == true) {
-        _showAlert("Registration Successful", "Logging you in...");
-
-        final loginRes = await auth.login(email, password);
-
-        if (!context.mounted) return; // ✅ fixed
-
-        if (loginRes['otpRequired'] == true) {
-          Navigator.pushNamed(
-            context,
-            '/otp-verification',
-            arguments: {'email': email},
-          );
-        } else {
-          Navigator.pushNamedAndRemoveUntil(
-            context,
-            '/home',
-            (route) => false,
-          );
-        }
+        // ✅ Directly go to HomeScreen on success
+        if (!mounted) return;
+        Navigator.pushNamedAndRemoveUntil(
+          context,'/home',
+          (route) => false,
+        );
       } else if (res['message'] == "Email already exists") {
-        _showAlert("Email Exists", "Redirecting to login...");
-        if (!context.mounted) return; // ✅ fixed
-        Navigator.pushNamed(context, '/login');
+        // ✅ Show alert and then redirect to login
+        if (!mounted) return;
+        _showAlert(
+          "Email Exists",
+          "This email is already registered. Redirecting to login...",
+          redirectToLogin: true,
+        );
       } else {
         throw Exception(res['message'] ?? "Registration failed");
       }
     } catch (e) {
-      if (!context.mounted) return; // ✅ fixed
+      if (!mounted) return;
       _showAlert("Registration Failed", e.toString());
     } finally {
-      if (context.mounted) {
+      if (mounted) {
         setState(() => _loading = false);
       }
     }
   }
 
   void _goToLogin(BuildContext context) {
+    if (!mounted) return;
     Navigator.pushNamed(context, '/login');
   }
 
-  void _showAlert(String title, String message) {
+  void _showAlert(String title, String message, {bool redirectToLogin = false}) {
+    if (!mounted) return; // prevent showing dialog after unmount
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: Text(title),
         content: Text(message),
         actions: [
           TextButton(
-
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.of(dialogContext).pop(); // close dialog
+              
+                Navigator.pushNamed(context, '/login');
+              
             },
             child: const Text("OK"),
           )
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    // cleanup controllers
+    _nameController.dispose();
+    _emailController.dispose();
+    _phoneController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 
   @override
