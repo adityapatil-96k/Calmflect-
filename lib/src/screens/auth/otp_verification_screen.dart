@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../contexts/auth_context.dart';
-
+import '../../Templates/base_template.dart';
+import '../../constants/colors.dart';
 class OTPVerificationScreen extends StatefulWidget {
   final String email;
   const OTPVerificationScreen({super.key, required this.email});
@@ -52,76 +53,100 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
     );
   }
 
-  @override
+   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5), // colors.background
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Text(
-                "Verify OTP",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF6200EE), // colors.primary
+    return BaseTemplate(
+      child: Center(
+        child: SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            margin: const EdgeInsets.symmetric(horizontal: 24),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.9),
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.08),
+                  blurRadius: 12,
+                  offset: const Offset(0, 6),
                 ),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                "OTP has been sent to: ${widget.email}",
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.black54, // colors.secondary
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              // OTP input
-              TextField(
-                controller: _otpController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: "Enter OTP",
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              // Verify button
-              ElevatedButton(
-                onPressed: _loading ? null : () => _handleVerify(context),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.deepPurple, // colors.primary
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Title
+                const Text(
+                  "Verify OTP",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.slate900,
                   ),
                 ),
-                child: _loading
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
-                      )
-                    : const Text(
-                        "Verify",
-                        style: TextStyle(fontSize: 16, color: Colors.white),
+                const SizedBox(height: 8),
+                Text(
+                  "OTP has been sent to: ${widget.email}",
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: AppColors.slate900,
+                  ),
+                ),
+                const SizedBox(height: 28),
+
+                // OTP input
+                TextField(
+                  controller: _otpController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: "Enter OTP",
+                    prefixIcon: const Icon(Icons.lock_open_outlined),
+                    filled: true,
+                    fillColor: const Color(0xFFF8FAFC), // slate-50
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: AppColors.slate900),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                // Verify button
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _loading ? null : () => _handleVerify(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.slate900,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
-              ),
-            ],
+                      elevation: 4,
+                    ),
+                    child: _loading
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : const Text(
+                            "Verify",
+                            style: TextStyle(fontSize: 16, color: Colors.white),
+                          ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
+
 }

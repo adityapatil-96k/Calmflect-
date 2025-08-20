@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../contexts/auth_context.dart';
+import '../../Templates/base_template.dart';
+import '../../constants/colors.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -19,9 +21,9 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5), // Replace with your colors.background
-      body: SingleChildScrollView(
+    return BaseTemplate(
+      // backgroundColor: const Color(0xFFF5F5F5), // Replace with your colors.background
+      // body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.all(20),
           height: MediaQuery.of(context).size.height,
@@ -34,7 +36,7 @@ class HomeScreen extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF6200EE), // Replace with your colors.primary
+                  color: AppColors.slate800, // Replace with your colors.primary
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -43,7 +45,7 @@ class HomeScreen extends StatelessWidget {
                 "Your mental health companion app. Stay calm, reflect, and thrive.",
                 style: TextStyle(
                   fontSize: 18,
-                  color: Colors.black87, // Replace with your colors.text
+                  color: AppColors.slate700, // Replace with your colors.text
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -64,7 +66,7 @@ class HomeScreen extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
+      );
+    // );
   }
 }

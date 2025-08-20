@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../contexts/auth_context.dart';
-
+import '../../Templates/base_template.dart';
+import '../../constants/colors.dart';
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -55,116 +56,160 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _showAlert(String title, String message) {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
+  showDialog(
+    context: context,
+    builder: (BuildContext dialogContext) {
+      return AlertDialog(
         title: Text(title),
         content: Text(message),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.of(dialogContext).pop(), // ✅ Correct
             child: const Text("OK"),
-          )
+          ),
         ],
-      ),
-    );
-  }
+      );
+    },
+  );
+}
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
+    return BaseTemplate(
+      // backgroundColor: const Color(0xFFF5F5F5),
+      // body: Padding(
+      //   padding: const EdgeInsets.all(20),
         child: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                const Text(
-                  "Login",
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: Color(0xFF6200EE),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 30),
+  child: SingleChildScrollView(
+    child: Container(
+      padding: const EdgeInsets.all(24),
+      margin: const EdgeInsets.symmetric(horizontal: 24),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.9),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // Title
+          const Text(
+            "Login",
+            style: TextStyle(
+              fontSize: 26,
+              fontWeight: FontWeight.bold,
+              color: AppColors.slate900, // slate-800
+            ),
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            "Welcome back 👋",
+            style: TextStyle(
+              fontSize: 14,
+              color: AppColors.slate900, // slate-700
+            ),
+          ),
+          const SizedBox(height: 28),
 
-                // Email input
-                TextField(
-                  controller: _emailController,
-                  decoration: const InputDecoration(
-                    labelText: "Email",
-                    border: OutlineInputBorder(),
-                  ),
-                  keyboardType: TextInputType.emailAddress,
-                ),
-                const SizedBox(height: 16),
+          // Email input
+          TextField(
+            controller: _emailController,
+            decoration: InputDecoration(
+              labelText: "Email",
+              prefixIcon: const Icon(Icons.email_outlined),
+              filled: true,
+              fillColor: const Color(0xFFF8FAFC), // slate-50
+              border: OutlineInputBorder(
+                 borderSide: BorderSide(color: AppColors.slate900),
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            keyboardType: TextInputType.emailAddress,
+          ),
+          const SizedBox(height: 16),
 
-                // Password input
-                TextField(
-                controller: _passwordController,
-                obscureText: _obscurePassword,
-                decoration: InputDecoration(
-                  labelText: "Password",
-                  border: const OutlineInputBorder(),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                           _obscurePassword ? Icons.visibility_off : Icons.visibility,
+          // Password input
+          TextField(
+            controller: _passwordController,
+            obscureText: _obscurePassword,
+            decoration: InputDecoration(
+              labelText: "Password",
+              prefixIcon: const Icon(Icons.lock_outline),
+              suffixIcon: IconButton(
+                icon: Icon(
+                  _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _obscurePassword = !_obscurePassword;
+                  });
+                },
+              ),
+              filled: true,
+              fillColor: const Color(0xFFF8FAFC),
+              border: OutlineInputBorder(
+                borderSide: BorderSide(color: AppColors.slate900), // slate-300
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
+
+          // Login Button
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: _loading ? null : _handleLogin,
+              style: ElevatedButton.styleFrom(
+                backgroundColor:  AppColors.slate900,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 4,
+              ),
+              child: _loading
+                  ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      ),
+                    )
+                  : const Text(
+                      "Login",
+                      style: TextStyle(fontSize: 16, color: Colors.white),
                     ),
-                    onPressed: () {
-                      setState(() {
-                          _obscurePassword = !_obscurePassword;
-        });
-      },
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          // Go to Register
+          GestureDetector(
+            onTap: _goToRegister,
+            child: const Text(
+              "Don't have an account? Register",
+              style: TextStyle(
+                color: AppColors.slate900,
+                fontWeight: FontWeight.w500,
+                decoration: TextDecoration.underline,
+              ),
+            ),
+          ),
+        ],
+      ),
     ),
   ),
 ),
-const SizedBox(height: 24),
-
-                // Login Button
-                ElevatedButton(
-                  onPressed: _loading ? null : _handleLogin,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepPurple,
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: _loading
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 2,
-                          ),
-                        )
-                      : const Text(
-                          "Login",
-                          style: TextStyle(fontSize: 16, color: Colors.white),
-                        ),
-                ),
-
-                const SizedBox(height: 20),
-
-                // Go to Register
-                GestureDetector(
-                  onTap: _goToRegister,
-                  child: const Text(
-                    "Don't have an account? Register",
-                    style: TextStyle(
-                      color: Colors.grey,
-                      decoration: TextDecoration.underline,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
+      );
+    // );
   }
 }

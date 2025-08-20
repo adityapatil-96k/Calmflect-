@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../../Templates/base_template.dart';
+import '../../constants/colors.dart';
 
 class LanguageSelectorScreen extends StatefulWidget {
   const LanguageSelectorScreen({super.key});
@@ -39,78 +41,100 @@ class _LanguageSelectorScreenState extends State<LanguageSelectorScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              "Choose your language",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
-              textAlign: TextAlign.center,
+    return BaseTemplate(
+      child: Center(
+        child: SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            margin: const EdgeInsets.symmetric(horizontal: 24),
+            decoration: BoxDecoration(
+              color: Colors.white.withAlpha(230), // ✅ same as OTP screen
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withAlpha(20),
+                  blurRadius: 12,
+                  offset: const Offset(0, 6),
+                ),
+              ],
             ),
-            const SizedBox(height: 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text(
+                  "Choose your language",
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.slate900,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
 
-            // List of languages
-            Expanded(
-              child: ListView.builder(
-                itemCount: availableLanguages.length,
-                itemBuilder: (context, index) {
-                  final lang = availableLanguages[index];
-                  final isSelected = _selectedLanguage == lang['code'];
+                // Language list
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: availableLanguages.length,
+                  itemBuilder: (context, index) {
+                    final lang = availableLanguages[index];
+                    final isSelected = _selectedLanguage == lang['code'];
 
-                  return GestureDetector(
-                    onTap: () => _handleLanguageSelect(lang['code']!),
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(vertical: 8),
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: isSelected ? Colors.deepPurple : Colors.grey,
+                    return GestureDetector(
+                      onTap: () => _handleLanguageSelect(lang['code']!),
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: isSelected
+                                ? AppColors.slate900
+                                : Colors.grey.shade400,
+                            width: 1.5,
+                          ),
+                          color: isSelected ? AppColors.slate900 : Colors.white,
                         ),
-                        color: isSelected ? Colors.deepPurple : Colors.transparent,
-                      ),
-                      child: Center(
-                        child: Text(
-                          lang['label']!,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: isSelected ? Colors.white : Colors.black87,
-                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        child: Center(
+                          child: Text(
+                            lang['label']!,
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: isSelected ? Colors.white : AppColors.slate900,
+                              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  );
-                },
-              ),
-            ),
-
-            const SizedBox(height: 16),
-
-            // Continue Button
-            ElevatedButton(
-              onPressed: _handleContinue,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepPurple,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                    );
+                  },
                 ),
-              ),
-              child: const Text(
-                "Continue",
-                style: TextStyle(fontSize: 16, color: Colors.white),
-              ),
+
+                const SizedBox(height: 24),
+
+                // Continue button
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _handleContinue,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.slate900,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 4,
+                    ),
+                    child: const Text(
+                      "Continue",
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
