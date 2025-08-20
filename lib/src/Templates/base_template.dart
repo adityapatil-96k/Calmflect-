@@ -33,22 +33,16 @@ class BaseTemplate extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              AppColors.slate50,
-              AppColors.blue50,
-              AppColors.indigo100,
-            ],
+            colors: [AppColors.slate50, AppColors.blue50, AppColors.indigo100],
           ),
         ),
         child: Stack(
           children: [
             // Background geometric patterns
             Positioned.fill(
-              child: CustomPaint(
-                painter: GeometricBackgroundPainter(),
-              ),
+              child: CustomPaint(painter: GeometricBackgroundPainter()),
             ),
-            
+
             // Main content
             Column(
               children: [
@@ -75,13 +69,21 @@ class BaseTemplate extends StatelessWidget {
                           // Left side
                           if (showBackButton)
                             IconButton(
-                              onPressed: onBackPressed,
+                              onPressed:
+                                  onBackPressed ??
+                                  () {
+                                    if (Navigator.of(context).canPop()) {
+                                      Navigator.of(context).pop();
+                                    }
+                                  },
                               icon: const Icon(
                                 Icons.arrow_back,
                                 color: AppColors.slate700,
                               ),
                               style: IconButton.styleFrom(
-                                backgroundColor: Colors.white.withValues(alpha: 0.2),
+                                backgroundColor: Colors.white.withValues(
+                                  alpha: 0.2,
+                                ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),
                                 ),
@@ -95,7 +97,9 @@ class BaseTemplate extends StatelessWidget {
                                 color: AppColors.slate700,
                               ),
                               style: IconButton.styleFrom(
-                                backgroundColor: Colors.white.withValues(alpha: 0.2),
+                                backgroundColor: Colors.white.withValues(
+                                  alpha: 0.2,
+                                ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),
                                 ),
@@ -103,33 +107,33 @@ class BaseTemplate extends StatelessWidget {
                             )
                           else
                             const SizedBox(width: 48),
-                          
+
                           // Center - Title
-                         Expanded(
-  child: AnimatedDefaultTextStyle(
-    duration: const Duration(milliseconds: 600),
-    style: const TextStyle(
-      fontSize: 22,
-      fontWeight: FontWeight.w800,
-      color: AppColors.slate900,
-      letterSpacing: 1.2,
-      shadows: [
-        Shadow(
-          blurRadius: 6,
-          color: Colors.black26,
-          offset: Offset(2, 2),
-        ),
-      ],
-    ),
-    child: Text(
-      title,
-      textAlign: TextAlign.center,
-      maxLines: 1,
-      overflow: TextOverflow.ellipsis,
-    ),
-  ),
-),
-                          
+                          Expanded(
+                            child: AnimatedDefaultTextStyle(
+                              duration: const Duration(milliseconds: 600),
+                              style: const TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.w800,
+                                color: AppColors.slate900,
+                                letterSpacing: 1.2,
+                                shadows: [
+                                  Shadow(
+                                    blurRadius: 6,
+                                    color: Colors.black26,
+                                    offset: Offset(2, 2),
+                                  ),
+                                ],
+                              ),
+                              child: Text(
+                                title,
+                                textAlign: TextAlign.center,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ),
+
                           // Right side
                           if (showProfile)
                             IconButton(
@@ -139,7 +143,9 @@ class BaseTemplate extends StatelessWidget {
                                 color: AppColors.slate700,
                               ),
                               style: IconButton.styleFrom(
-                                backgroundColor: Colors.white.withValues(alpha: 0.2),
+                                backgroundColor: Colors.white.withValues(
+                                  alpha: 0.2,
+                                ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),
                                 ),
@@ -152,7 +158,7 @@ class BaseTemplate extends StatelessWidget {
                     ),
                   ),
                 ),
-                
+
                 // Content
                 Expanded(child: child),
               ],
@@ -170,50 +176,56 @@ class GeometricBackgroundPainter extends CustomPainter {
     final paint = Paint()..style = PaintingStyle.fill;
 
     // Large circle top-right
-    paint.shader = RadialGradient(
-      colors: [
-        AppColors.blue200.withValues(alpha: 0.4),
-        AppColors.indigo200.withValues(alpha: 0.4),
-      ],
-    ).createShader(Rect.fromCircle(
-      center: Offset(size.width + 60, -60),
-      radius: 160,
-    ));
+    paint.shader =
+        RadialGradient(
+          colors: [
+            AppColors.blue200.withValues(alpha: 0.4),
+            AppColors.indigo200.withValues(alpha: 0.4),
+          ],
+        ).createShader(
+          Rect.fromCircle(center: Offset(size.width + 60, -60), radius: 160),
+        );
     canvas.drawCircle(Offset(size.width + 60, -60), 160, paint);
 
     // Medium circle bottom-left
-    paint.shader = RadialGradient(
-      colors: [
-        AppColors.slate200.withValues(alpha: 0.3),
-        AppColors.blue200.withValues(alpha: 0.3),
-      ],
-    ).createShader(Rect.fromCircle(
-      center: Offset(-120, size.height + 120),
-      radius: 192,
-    ));
+    paint.shader =
+        RadialGradient(
+          colors: [
+            AppColors.slate200.withValues(alpha: 0.3),
+            AppColors.blue200.withValues(alpha: 0.3),
+          ],
+        ).createShader(
+          Rect.fromCircle(center: Offset(-120, size.height + 120), radius: 192),
+        );
     canvas.drawCircle(Offset(-120, size.height + 120), 192, paint);
 
     // Small accent circles
-    paint.shader = RadialGradient(
-      colors: [
-        AppColors.indigo300.withValues(alpha: 0.2),
-        AppColors.blue300.withValues(alpha: 0.2),
-      ],
-    ).createShader(Rect.fromCircle(
-      center: Offset(size.width * 0.75, size.height * 0.33),
-      radius: 64,
-    ));
+    paint.shader =
+        RadialGradient(
+          colors: [
+            AppColors.indigo300.withValues(alpha: 0.2),
+            AppColors.blue300.withValues(alpha: 0.2),
+          ],
+        ).createShader(
+          Rect.fromCircle(
+            center: Offset(size.width * 0.75, size.height * 0.33),
+            radius: 64,
+          ),
+        );
     canvas.drawCircle(Offset(size.width * 0.75, size.height * 0.33), 64, paint);
 
-    paint.shader = RadialGradient(
-      colors: [
-        AppColors.slate300.withValues(alpha: 0.25),
-        AppColors.indigo300.withValues(alpha: 0.25),
-      ],
-    ).createShader(Rect.fromCircle(
-      center: Offset(size.width * 0.33, size.height * 0.67),
-      radius: 48,
-    ));
+    paint.shader =
+        RadialGradient(
+          colors: [
+            AppColors.slate300.withValues(alpha: 0.25),
+            AppColors.indigo300.withValues(alpha: 0.25),
+          ],
+        ).createShader(
+          Rect.fromCircle(
+            center: Offset(size.width * 0.33, size.height * 0.67),
+            radius: 48,
+          ),
+        );
     canvas.drawCircle(Offset(size.width * 0.33, size.height * 0.67), 48, paint);
   }
 

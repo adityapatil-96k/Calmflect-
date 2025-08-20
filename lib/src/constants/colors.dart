@@ -18,5 +18,7 @@ class AppColors {
   static const Color indigo300 = Color(0xFFA5B4FC);
   static const Color blue300 = Color(0xFF93C5FD);
   static const Color slate300 = Color(0xFFCBD5E1);
-
+  
+  // Background
+  static const Color splashBackground = Color(0xFFF8FAFC);  
 }

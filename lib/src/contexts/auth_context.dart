@@ -17,14 +17,24 @@ class AuthProvider with ChangeNotifier {
   bool get loading => _loading;
 
   Future<void> _loadStoredData() async {
-    final prefs = await SharedPreferences.getInstance();
-    final storedToken = prefs.getString('accessToken');
-    if (storedToken != null) {
-      _accessToken = storedToken;
+  final prefs = await SharedPreferences.getInstance();
+  final storedAccessToken = prefs.getString('accessToken');
+  final storedRefreshToken = prefs.getString('refreshToken');
+
+  if (storedAccessToken != null && storedRefreshToken != null) {
+    _accessToken = storedAccessToken;
+
+    try {
+      await refreshToken(); // ensure token is valid
+    } catch (e) {
+      debugPrint('Initial refresh failed: $e');
+      await logout();
     }
-    _loading = false;
-    notifyListeners();
   }
+
+  _loading = false;
+  notifyListeners();
+}
 
   Future<Map<String, bool>> login(String email, String password) async {
     try {
@@ -116,13 +126,24 @@ Future<Map<String, dynamic>> register(
   }
 
   Future<void> logout() async {
-    _user = null;
-    _accessToken = null;
+  final prefs = await SharedPreferences.getInstance();
+  final refreshToken = prefs.getString('refreshToken');
 
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('accessToken');
-    await prefs.remove('refreshToken');
-
-    notifyListeners();
+  if (refreshToken != null) {
+    try {
+      // 🔥 Call backend logout with refresh token
+      await AuthService.logout(refreshToken);
+    } catch (e) {
+      debugPrint("Backend logout failed: $e");
+    }
   }
+
+  // Clear locally no matter what
+  _user = null;
+  _accessToken = null;
+  await prefs.remove('accessToken');
+  await prefs.remove('refreshToken');
+
+  notifyListeners();
+}
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mindveda/src/screens/Main/splash_screen.dart';
 import 'package:provider/provider.dart';
 import '../contexts/auth_context.dart';
 import 'auth_navigator.dart';
@@ -13,9 +14,7 @@ class RootNavigation extends StatelessWidget {
 
     // Optional: splash while restoring tokens
     if (auth.loading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const SplashScreen();
     }
 
     // Switch between stacks by auth state.
