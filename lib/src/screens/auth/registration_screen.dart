@@ -43,7 +43,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         // ✅ Directly go to HomeScreen on success
         if (!mounted) return;
         Navigator.pushNamedAndRemoveUntil(
-          context,'/home',
+          this.context, // Use State.context after async gap
+          '/home',
           (route) => false,
         );
       } else if (res['message'] == "Email already exists") {
