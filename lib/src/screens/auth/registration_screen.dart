@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../services/auth_service.dart';
+import 'package:provider/provider.dart';
+import '../../contexts/auth_context.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -16,38 +17,37 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _loading = false;
 
   Future<void> _handleRegister(BuildContext context) async {
-    final name = _nameController.text.trim();
-    final email = _emailController.text.trim();
-    final phone = _phoneController.text.trim();
-    final password = _passwordController.text.trim();
+  final name = _nameController.text.trim();
+  final email = _emailController.text.trim();
+  final phone = _phoneController.text.trim();
+  final password = _passwordController.text.trim();
 
-    if (name.isEmpty || email.isEmpty || phone.isEmpty || password.isEmpty) {
+  if (name.isEmpty || email.isEmpty || phone.isEmpty || password.isEmpty) {
+    _showAlert("Missing Fields", "Please fill in all fields");
+    return;
+  }
+
+  setState(() => _loading = true);
+
+  try {
+    // Step 1: Call register
+    final res = await context
+        .read<AuthProvider>()
+        .register(name, email, phone, password);
+
+    if (!mounted) return;
+
+    if (res['message'] == "User registered successfully") {
+      // Step 2: Auto-login with same credentials
+
+      await this.context.read<AuthProvider>().login(email, password);
+
       if (!mounted) return;
-      _showAlert("Missing Fields", "Please fill in all fields");
-      return;
-    }
+      // Navigate to OTP verification screen
+      Navigator.pushNamed(this.context, '/otp-verification', arguments: {'email': email});
+      // ✅ OTP → Home handled by AuthProvider
 
-    setState(() => _loading = true);
-
-    try {
-      final res = await AuthService.registerUser({
-        'name': name,
-        'email': email,
-        'phone': phone,
-        'password': password,
-      });
-
-      if (!mounted) return;
-
-      if (res['success'] == true) {
-        // ✅ Directly go to HomeScreen on success
-        if (!mounted) return;
-        Navigator.pushNamedAndRemoveUntil(
-          this.context, // Use State.context after async gap
-          '/home',
-          (route) => false,
-        );
-      } else if (res['message'] == "Email already exists") {
+    } else if (res['message'] == "Email already exists") {
         // ✅ Show alert and then redirect to login
         if (!mounted) return;
         _showAlert(
@@ -58,23 +58,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
       } else {
         throw Exception(res['message'] ?? "Registration failed");
       }
-    } catch (e) {
-      if (!mounted) return;
-      _showAlert("Registration Failed", e.toString());
-    } finally {
-      if (mounted) {
-        setState(() => _loading = false);
-      }
+  } catch (e) {
+    if (!mounted) return;
+    _showAlert("Registration Failed", e.toString());
+  } finally {
+    if (mounted) {
+      setState(() => _loading = false);
     }
   }
+}
 
   void _goToLogin(BuildContext context) {
-    if (!mounted) return;
     Navigator.pushNamed(context, '/login');
   }
 
   void _showAlert(String title, String message, {bool redirectToLogin = false}) {
-    if (!mounted) return; // prevent showing dialog after unmount
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
@@ -83,10 +81,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.of(dialogContext).pop(); // close dialog
-              
-                Navigator.pushNamed(context, '/login');
-              
+              Navigator.of(dialogContext).pop();
+              if (redirectToLogin) {
+                _goToLogin(context);
+              }
             },
             child: const Text("OK"),
           )
@@ -97,7 +95,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   void dispose() {
-    // cleanup controllers
     _nameController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
@@ -127,7 +124,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(height: 30),
 
-              // Name input
               TextField(
                 controller: _nameController,
                 decoration: const InputDecoration(
@@ -137,7 +133,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(height: 16),
 
-              // Email input
               TextField(
                 controller: _emailController,
                 decoration: const InputDecoration(
@@ -148,7 +143,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(height: 16),
 
-              // Phone input
               TextField(
                 controller: _phoneController,
                 decoration: const InputDecoration(
@@ -159,7 +153,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(height: 16),
 
-              // Password input
               TextField(
                 controller: _passwordController,
                 obscureText: true,
@@ -170,13 +163,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(height: 24),
 
-              // Register button
               ElevatedButton(
                 onPressed: _loading ? null : () => _handleRegister(context),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.deepPurple,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -198,7 +189,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
               const SizedBox(height: 20),
 
-              // Go to Login
               GestureDetector(
                 onTap: () => _goToLogin(context),
                 child: const Text(

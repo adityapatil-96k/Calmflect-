@@ -75,25 +75,26 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  Future<void> register(String name, String email, String phone, String password) async {
-    try {
-      final res = await AuthService.registerUser({
-        'name': name,
-        'email': email,
-        'phone': phone,
-        'password': password,
-      });
+Future<Map<String, dynamic>> register(
+    String name, String email, String phone, String password) async {
+  try {
+    final res = await AuthService.registerUser({
+      'name': name,
+      'email': email,
+      'phone': phone,
+      'password': password,
+    });
 
-      if (res['success'] == true) {
-        debugPrint('✅ Registration Successful: You can now log in with your credentials');
-      } else {
-        throw Exception(res['message'] ?? 'Registration failed');
-      }
-    } catch (e) {
-      debugPrint('Registration Failed: $e');
-      rethrow;
-    }
+    // ✅ Just return backend response (let UI decide what to do)
+    return res;
+  } catch (e) {
+    debugPrint('Registration Failed: $e');
+    // return a unified error response (so UI doesn’t break)
+    return {'message': 'error', 'error': e.toString()};
   }
+}
+
+
 
   Future<void> refreshToken() async {
     try {
