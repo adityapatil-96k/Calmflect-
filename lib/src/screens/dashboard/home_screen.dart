@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../contexts/auth_context.dart';
 import '../../Templates/base_template.dart';
 import '../../constants/colors.dart';
+import '../../components/Buttons/custom_button.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -50,18 +51,13 @@ class HomeScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 30),
-              ElevatedButton(
+              CustomButton(
                 onPressed: () => _goToLogin(context),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: const Text(
-                  "Logout",
-                  style: TextStyle(fontSize: 16),
-                ),
+                text: "Logout",
+                backgroundColor: AppColors.slate900, // Replace with your colors.primary
+                borderRadius: 20,
+                width: 100,
+                
               ),
             ],
           ),

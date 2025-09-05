@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../contexts/auth_context.dart';
 import '../../Templates/base_template.dart';
 import '../../constants/colors.dart';
+import '../../components/Buttons/custom_button.dart';
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -162,34 +163,15 @@ class _LoginScreenState extends State<LoginScreen> {
           const SizedBox(height: 24),
 
           // Login Button
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: _loading ? null : _handleLogin,
-              style: ElevatedButton.styleFrom(
-                backgroundColor:  AppColors.slate900,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: 4,
-              ),
-              child: _loading
-                  ? const SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
-                      ),
-                    )
-                  : const Text(
-                      "Login",
-                      style: TextStyle(fontSize: 16, color: Colors.white),
-                    ),
-            ),
-          ),
+   
 
+          CustomButton(
+            onPressed: () => _handleLogin(),
+            text: "Login",
+            backgroundColor: AppColors.slate900,
+            borderRadius: 12,
+            isLoading: _loading,
+          ),
           const SizedBox(height: 20),
 
           // Go to Register

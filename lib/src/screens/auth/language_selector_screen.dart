@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../Templates/base_template.dart';
 import '../../constants/colors.dart';
+import  '../../components/Buttons/custom_button.dart';
 
 class LanguageSelectorScreen extends StatefulWidget {
   const LanguageSelectorScreen({super.key});
@@ -113,25 +114,11 @@ class _LanguageSelectorScreenState extends State<LanguageSelectorScreen> {
 
                 const SizedBox(height: 24),
 
-                // Continue button
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _handleContinue,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.slate900,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 4,
-                    ),
-                    child: const Text(
-                      "Continue",
-                      style: TextStyle(fontSize: 16, color: Colors.white),
-                    ),
-                  ),
-                ),
+              CustomButton(
+                text: "Continue",
+                onPressed: _handleContinue,
+                backgroundColor: AppColors.slate900,
+              ),
               ],
             ),
           ),

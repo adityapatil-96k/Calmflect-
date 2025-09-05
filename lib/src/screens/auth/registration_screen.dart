@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../contexts/auth_context.dart';
 import '../../Templates/base_template.dart';
 import '../../constants/colors.dart';
+import '../../components/Buttons/custom_button.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -225,35 +226,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 24),
 
                 // Register button
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _loading ? null : () => _handleRegister(context),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.slate900,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 4,
-                    ),
-                    child: _loading
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 2,
-                            ),
-                          )
-                        : const Text(
-                            "Register",
-                            style: TextStyle(fontSize: 16, color: Colors.white),
-                          ),
-                  ),
+
+
+                CustomButton(
+                  onPressed: () => _handleRegister(context),
+                  text: "Register",
+                  backgroundColor: AppColors.slate900,
+                  borderRadius: 12,
+                  isLoading: _loading,
                 ),
                 const SizedBox(height: 20),
 
+                
                 // Link to Login
                 GestureDetector(
                   onTap: () => _goToLogin(context),
