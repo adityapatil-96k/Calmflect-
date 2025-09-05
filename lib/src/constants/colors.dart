@@ -21,4 +21,22 @@ class AppColors {
   
   // Background
   static const Color splashBackground = Color(0xFFF8FAFC);  
+
+
+
+  // Grays
+  static const Color gray100 = Color(0xFFF5F5F5);
+  static const Color gray500 = Color(0xFF6B7280);
+  static const Color gray700 = Color(0xFF374151);
+
+  // Feature-specific colors
+  static const Color blue500 = Color(0xFF3B82F6);
+  static const Color green500 = Color(0xFF10B981);
+  static const Color orange500 = Color(0xFFF97316);
+  static const Color purple500 = Color(0xFF8B5CF6);
+  static const Color red500 = Color(0xFFEF4444);
+  static const Color teal500 = Color(0xFF14B8A6);
+  static const Color pink500 = Color(0xFFEC4899);
+  static const Color amber500 = Color(0xFFF59E0B);
+
 }
