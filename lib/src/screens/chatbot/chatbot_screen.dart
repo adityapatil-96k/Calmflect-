@@ -19,7 +19,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
       _messages.add(_controller.text.trim());
       _controller.clear();
     });
-    // TODO: later connect with bot logic
+    
   }
 
   @override

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-const String apiBaseUrl = 'https://authservice-m94n.onrender.com/api/auth'; // backend URL
+const String apiBaseUrl = 'http://10.0.2.2:5002/api/auth'; // backend URL
 
 class AuthService {
   // ----------------------
